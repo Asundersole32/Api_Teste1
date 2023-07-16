@@ -1,17 +1,23 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
 from Models import token_model
+from Application import route_functions
 
 from Application import security
 from datetime import timedelta
 
 from typing import Annotated
 
+routers = APIRouter()
 
-app = FastAPI()
 
-@app.post("/token", response_model=token_model.Token)
+@routers.get("/")
+async def presentation():
+    return route_functions.presentation_function()
+
+
+@routers.post("/token", response_model=token_model.Token)
 async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
     user = security.authenticate_user(db, form_data.username, form_data.password)
     if not user:
