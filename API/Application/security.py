@@ -1,4 +1,5 @@
 from Models import actors, token_model, users
+from Persistence import data_manipulation
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -50,7 +51,8 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     return encoded_jwt
 
 
-async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], db):
+async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
+    db = data_manipulation.user_manipulation_r
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
